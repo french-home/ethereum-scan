@@ -1,0 +1,19 @@
+[project]
+name = "ethereum-scan"
+version = "1.0.0.0"
+authors = [
+    {name="French", email="french@hoime.cn"},
+]
+description = "The Ethereum scanning tool constructed with Python, based on the open API provided by EtherScan, ensures the accuracy of the data"
+readme = "README.md"
+license = { file="LICENSE" }
+requires-python = ">=3"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/french-home/ethereum-scan"
+"Bug Tracker" = "https://github.com/french-home/ethereum-scan/issues"
