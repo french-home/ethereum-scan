@@ -13,7 +13,7 @@
 """
 import requests
 import json
-from src.ethereum_scan.tool import Tool
+from ethereum_scan.tool import Tool
 
 
 class Key(object):
