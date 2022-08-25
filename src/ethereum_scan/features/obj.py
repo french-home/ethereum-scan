@@ -71,8 +71,8 @@ class Accounts(Key):
             # 判断是否发生了错误
             if response["status"] == "1":
                 # 除了余额
-                eht_balance = Tool.wei_to_ether(response["result"])
-                return eht_balance
+                eth_balance = Tool.wei_to_ether(response["result"])
+                return eth_balance
             else:
                 raise ValueError(response["result"])
         except requests.exceptions.ConnectionError:
@@ -448,7 +448,7 @@ class Accounts(Key):
 
         Args:
             address(str): ETH/ERC20地址
-            block_type(str): 合约地址
+            block_type(str): 区块类型
             page(int): 页数
             offset(int): 数量
 
@@ -490,7 +490,7 @@ class Accounts(Key):
 
         Args:
             address(str): ETH/ERC20地址
-            blockno(int): 页数
+            blockno(int): 区块号
 
         Returns:
             list
@@ -510,7 +510,9 @@ class Accounts(Key):
             response = json.loads(response.text)
             # 判断是否发生了错误
             if response["status"] == "1":
-                return response["result"]
+                # 除了余额
+                eth_balance = Tool.wei_to_ether(response["result"])
+                return eth_balance
             else:
                 print("错误信息:")
                 print(response)
