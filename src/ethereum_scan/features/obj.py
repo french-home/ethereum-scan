@@ -519,3 +519,84 @@ class Accounts(Key):
                 raise ValueError(response["result"])
         except requests.exceptions.ConnectionError:
             print("请求失败")
+
+
+class Transactions(Key):
+    # 初始化
+    def __init__(self, key_conf):
+        Key.__init__(self, key_conf)
+        super().__init__(key_conf)
+        # 重新赋值
+        self.api_key = key_conf.api_key
+
+    # 检查合约执行状态
+    def check_contract_execution_status(self, txhash):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-04 \n
+        @修改时间: 2022-12-04 \n
+        @功能描述: 检查合约执行状态 \n
+
+        Args:
+            txhash(str): 交易的Hash值
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "transaction",
+            "action": "getstatus",
+            "txhash": txhash,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    # 检查交易执行状态
+    def check_transaction_receipt_status(self, txhash):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-04 \n
+        @修改时间: 2022-12-04 \n
+        @功能描述: 检查交易执行状态 \n
+
+        Args:
+            txhash(str): 交易的Hash值
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "transaction",
+            "action": "gettxreceiptstatus",
+            "txhash": txhash,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
