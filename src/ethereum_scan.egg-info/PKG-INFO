@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: ethereum-scan
-Version: 1.0.0.2
+Version: 1.0.0.3
 Summary: The Ethereum scanning tool constructed with Python, based on the open API provided by EtherScan, ensures the accuracy of the data
 Author-email: French <french@hoime.cn>
 License: Mozilla Public License Version 2.0

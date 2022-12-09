@@ -32,6 +32,7 @@ class Key(object):
         self.api_key = api_key
 
 
+# 账户
 class Accounts(Key):
     # 初始化
     def __init__(self, key_conf):
@@ -521,6 +522,7 @@ class Accounts(Key):
             print("请求失败")
 
 
+# 交易
 class Transactions(Key):
     # 初始化
     def __init__(self, key_conf):
@@ -584,6 +586,359 @@ class Transactions(Key):
             "module": "transaction",
             "action": "gettxreceiptstatus",
             "txhash": txhash,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+
+# 代币
+class Tokens(Key):
+    # 初始化
+    def __init__(self, key_conf):
+        Key.__init__(self, key_conf)
+        super().__init__(key_conf)
+        # 重新赋值
+        self.api_key = key_conf.api_key
+
+    # 根据ERC-20合约地址, 获取代币总量
+    def get_erc20_token_total_supply_by_contract_address(self, contractaddress):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-08 \n
+        @修改时间: 2022-12-08 \n
+        @功能描述: 根据ERC-20合约地址, 获取代币总量\n
+
+        Args:
+            contractaddress(str): ERC-20合约地址
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "stats",
+            "action": "tokensupply",
+            "contractaddress": contractaddress,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    # 根据ERC-20合约地址, 获取目标地址持有的代币余额
+    def get_erc20_token_account_balance_for_token_contract_address(self, contractaddress, address):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-08 \n
+        @修改时间: 2022-12-08 \n
+        @功能描述: 根据ERC-20合约地址, 获取目标地址持有的代币余额\n
+
+        Args:
+            contractaddress(str): ERC-20合约地址
+            address(str): ETH/ERC20地址
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "account",
+            "action": "tokenbalance",
+            "contractaddress": contractaddress,
+            "address": address,
+            "tag": "latest",
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    # 根据ERC-20合约地址和块号, 获取历史代币总量 -- PRO
+    def get_historical_erc20_token_total_supply_by_contract_address_and_block_no(self, contractaddress, blockno):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-08 \n
+        @修改时间: 2022-12-08 \n
+        @功能描述: 根据ERC-20合约地址和块好, 获取历史代币总量 --- PRO \n
+
+        Args:
+            contractaddress(str): ERC-20合约地址
+            blockno(int): 块编号
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "stats",
+            "action": "tokensupplyhistory",
+            "contractaddress": contractaddress,
+            "blockno": blockno,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    # 据ERC-20合约地址和块号, 获取目标地址的历史持有的代币余额 -- PRO
+    def get_historical_erc20_token_account_balance_for_token_contract_address_by_block_no(self, contractaddress, address, blockno):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-08 \n
+        @修改时间: 2022-12-08 \n
+        @功能描述: 据ERC-20合约地址和块号, 获取目标地址的历史持有的代币余额 --- PRO\n
+
+        Args:
+            contractaddress(str): ERC-20合约地址
+            address(str): ETH/ERC20地址
+            blockno(int): 块编号
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "account",
+            "action": "tokenbalancehistory",
+            "contractaddress": contractaddress,
+            "address": address,
+            "blockno": blockno,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    # 根据ERC-20合约地址, 获取代币持有者列表 -- PRO
+    def get_token_holder_list_by_contract_address(self, contractaddress, page, offset):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-08 \n
+        @修改时间: 2022-12-08 \n
+        @功能描述: 根据ERC-20合约地址, 获取代币持有者列表 -- PRO\n
+
+        Args:
+            contractaddress(str): ERC-20合约地址
+            page(int): 页数
+            offset(int): 数量
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "token",
+            "action": "tokenholderlist",
+            "contractaddress": contractaddress,
+            "page": page,
+            "offset": offset,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    # 根据ERC-20合约地址, 获取代币信息 -- PRO
+    def get_token_info_by_contract_address(self, contractaddress):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-08 \n
+        @修改时间: 2022-12-08 \n
+        @功能描述: 根据ERC-20合约地址, 获取代币信息 -- PRO \n
+
+        Args:
+            contractaddress(str): ERC-20合约地址
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "token",
+            "action": "tokeninfo",
+            "contractaddress": contractaddress,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    def get_erc20_token_account_balance_for_token_contract_address(self, contractaddress, address):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-08 \n
+        @修改时间: 2022-12-08 \n
+        @功能描述: 根据ERC-20合约地址, 获取目标地址持有的代币余额\n
+
+        Args:
+            contractaddress(str): ERC-20合约地址
+            address(str): ETH/ERC20地址
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "account",
+            "action": "tokenbalance",
+            "contractaddress": contractaddress,
+            "address": address,
+            "tag": "latest",
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    def get_erc20_token_account_balance_for_token_contract_address(self, contractaddress, address):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-08 \n
+        @修改时间: 2022-12-08 \n
+        @功能描述: 根据ERC-20合约地址, 获取目标地址持有的代币余额\n
+
+        Args:
+            contractaddress(str): ERC-20合约地址
+            address(str): ETH/ERC20地址
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "account",
+            "action": "tokenbalance",
+            "contractaddress": contractaddress,
+            "address": address,
+            "tag": "latest",
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    def get_erc20_token_account_balance_for_token_contract_address(self, contractaddress, address):
+        """
+        开发人员: French \n
+        @创建时间: 2022-12-08 \n
+        @修改时间: 2022-12-08 \n
+        @功能描述: 根据ERC-20合约地址, 获取目标地址持有的代币余额\n
+
+        Args:
+            contractaddress(str): ERC-20合约地址
+            address(str): ETH/ERC20地址
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "account",
+            "action": "tokenbalance",
+            "contractaddress": contractaddress,
+            "address": address,
+            "tag": "latest",
             "apikey": self.api_key
         }
         requests_url += Tool.dict_to_url_parameter(parameter)
