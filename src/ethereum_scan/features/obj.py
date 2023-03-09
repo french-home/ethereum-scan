@@ -842,16 +842,18 @@ class Tokens(Key):
         except requests.exceptions.ConnectionError:
             print("请求失败")
 
-    def get_erc20_token_account_balance_for_token_contract_address(self, contractaddress, address):
+    # 根据ERC-20地址, 获取代币持有量 -- PRO
+    def get_address_erc20_token_holding(self, address, page, offset):
         """
         开发人员: French \n
-        @创建时间: 2022-12-08 \n
-        @修改时间: 2022-12-08 \n
-        @功能描述: 根据ERC-20合约地址, 获取目标地址持有的代币余额\n
+        @创建时间: 2023-03-09 \n
+        @修改时间: 2023-03-09 \n
+        @功能描述: 根据ERC-20地址, 获取代币持有量 -- PRO \n
 
         Args:
-            contractaddress(str): ERC-20合约地址
-            address(str): ETH/ERC20地址
+            address(str): ERC-20地址
+            page(int): 页数
+            offset(int): 数量
 
         Returns:
             dict
@@ -859,10 +861,10 @@ class Tokens(Key):
         requests_url = self.api_url + "?"
         parameter = {
             "module": "account",
-            "action": "tokenbalance",
-            "contractaddress": contractaddress,
+            "action": "addresstokenbalance",
             "address": address,
-            "tag": "latest",
+            "page": page,
+            "offset": offset,
             "apikey": self.api_key
         }
         requests_url += Tool.dict_to_url_parameter(parameter)
@@ -880,16 +882,18 @@ class Tokens(Key):
         except requests.exceptions.ConnectionError:
             print("请求失败")
 
-    def get_erc20_token_account_balance_for_token_contract_address(self, contractaddress, address):
+    # 根据ERC-721地址, 获取代币持有量 -- PRO
+    def get_address_erc721_token_holding(self, address, page, offset):
         """
         开发人员: French \n
-        @创建时间: 2022-12-08 \n
-        @修改时间: 2022-12-08 \n
-        @功能描述: 根据ERC-20合约地址, 获取目标地址持有的代币余额\n
+        @创建时间: 2023-03-09 \n
+        @修改时间: 2023-03-09 \n
+        @功能描述: 根据ERC-721地址, 获取代币持有量 -- PRO \n
 
         Args:
-            contractaddress(str): ERC-20合约地址
-            address(str): ETH/ERC20地址
+            address(str): ERC-721地址
+            page(int): 页数
+            offset(int): 数量
 
         Returns:
             dict
@@ -897,10 +901,10 @@ class Tokens(Key):
         requests_url = self.api_url + "?"
         parameter = {
             "module": "account",
-            "action": "tokenbalance",
-            "contractaddress": contractaddress,
+            "action": "addresstokennftbalance",
             "address": address,
-            "tag": "latest",
+            "page": page,
+            "offset": offset,
             "apikey": self.api_key
         }
         requests_url += Tool.dict_to_url_parameter(parameter)
@@ -918,27 +922,45 @@ class Tokens(Key):
         except requests.exceptions.ConnectionError:
             print("请求失败")
 
-    def get_erc20_token_account_balance_for_token_contract_address(self, contractaddress, address):
+
+
+
+
+
+# 日志
+class Logs(Key):
+    # 初始化
+    def __init__(self, key_conf):
+        Key.__init__(self, key_conf)
+        super().__init__(key_conf)
+        # 重新赋值
+        self.api_key = key_conf.api_key
+
+    # Get Event Logs by Address
+    def get_event_logs_by_address(self, address, from_block, to_block, page, offset):
         """
-        开发人员: French \n
-        @创建时间: 2022-12-08 \n
-        @修改时间: 2022-12-08 \n
-        @功能描述: 根据ERC-20合约地址, 获取目标地址持有的代币余额\n
+        @开发人员: French \n
+        @创建时间: 2023-03-09 \n
+        @修改时间: 2023-03-09 \n
+        @功能描述: 根据ERC-20地址，获取区块时间日志 \n
 
         Args:
-            contractaddress(str): ERC-20合约地址
-            address(str): ETH/ERC20地址
+            address(str): ERC-20地址
+            from_block(int): 来自块
+            to_block(int): 到快
+            page(int): 页数
+            offset(int): 数量
 
         Returns:
             dict
         """
         requests_url = self.api_url + "?"
         parameter = {
-            "module": "account",
-            "action": "tokenbalance",
-            "contractaddress": contractaddress,
-            "address": address,
-            "tag": "latest",
+            "module": "logs",
+            "action": "getLogs",
+            "fromBlock": from_block,
+
+            "contractaddress": "",
             "apikey": self.api_key
         }
         requests_url += Tool.dict_to_url_parameter(parameter)
@@ -955,3 +977,4 @@ class Tokens(Key):
                 raise ValueError(response["result"])
         except requests.exceptions.ConnectionError:
             print("请求失败")
+    pass
