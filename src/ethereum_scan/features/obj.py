@@ -727,7 +727,8 @@ class Tokens(Key):
             print("请求失败")
 
     # 据ERC-20合约地址和块号, 获取目标地址的历史持有的代币余额 -- PRO
-    def get_historical_erc20_token_account_balance_for_token_contract_address_by_block_no(self, contractaddress, address, blockno):
+    def get_historical_erc20_token_account_balance_for_token_contract_address_by_block_no(self, contractaddress,
+                                                                                          address, blockno):
         """
         开发人员: French \n
         @创建时间: 2022-12-08 \n
@@ -922,9 +923,47 @@ class Tokens(Key):
         except requests.exceptions.ConnectionError:
             print("请求失败")
 
+    # 根据ERC-721合约地址, 获取代币库存 -- PRO
+    def get_address_erc721_token_inventory_by_contract_address(self, address, contractaddress, page, offset):
+        """
+        开发人员: French \n
+        @创建时间: 2023-03-10 \n
+        @修改时间: 2023-03-10 \n
+        @功能描述: 根据ERC-721合约地址, 获取代币库存  -- PRO \n
 
+        Args:
+            address(str): ERC-721地址
+            contractaddress(str): 合约地址
+            page(int): 页数
+            offset(int): 数量
 
-
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "account",
+            "action": "addresstokennftinventory",
+            "address": address,
+            "contractaddress": contractaddress,
+            "page": page,
+            "offset": offset,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
 
 
 # 日志
@@ -977,4 +1016,5 @@ class Logs(Key):
                 raise ValueError(response["result"])
         except requests.exceptions.ConnectionError:
             print("请求失败")
+
     pass
