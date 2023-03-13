@@ -726,7 +726,7 @@ class Tokens(Key):
         except requests.exceptions.ConnectionError:
             print("请求失败")
 
-    # 据ERC-20合约地址和块号, 获取目标地址的历史持有的代币余额 -- PRO
+    # 根据ERC-20合约地址和块号, 获取目标地址的历史持有的代币余额 -- PRO
     def get_historical_erc20_token_account_balance_for_token_contract_address_by_block_no(self, contractaddress,
                                                                                           address, blockno):
         """
@@ -768,7 +768,7 @@ class Tokens(Key):
             print("请求失败")
 
     # 根据ERC-20合约地址, 获取代币持有者列表 -- PRO
-    def get_token_holder_list_by_contract_address(self, contractaddress, page, offset):
+    def get_token_holder_list_by_contract_address(self, contractaddress, page=1, offset=100):
         """
         开发人员: French \n
         @创建时间: 2022-12-08 \n
@@ -844,7 +844,7 @@ class Tokens(Key):
             print("请求失败")
 
     # 根据ERC-20地址, 获取代币持有量 -- PRO
-    def get_address_erc20_token_holding(self, address, page, offset):
+    def get_address_erc20_token_holding(self, address, page=1, offset=100):
         """
         开发人员: French \n
         @创建时间: 2023-03-09 \n
@@ -884,7 +884,7 @@ class Tokens(Key):
             print("请求失败")
 
     # 根据ERC-721地址, 获取代币持有量 -- PRO
-    def get_address_erc721_token_holding(self, address, page, offset):
+    def get_address_erc721_token_holding(self, address, page=1, offset=100):
         """
         开发人员: French \n
         @创建时间: 2023-03-09 \n
@@ -924,7 +924,7 @@ class Tokens(Key):
             print("请求失败")
 
     # 根据ERC-721合约地址, 获取代币库存 -- PRO
-    def get_address_erc721_token_inventory_by_contract_address(self, address, contractaddress, page, offset):
+    def get_address_erc721_token_inventory_by_contract_address(self, address, contractaddress, page=1, offset=100):
         """
         开发人员: French \n
         @创建时间: 2023-03-10 \n
