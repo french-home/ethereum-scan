@@ -604,6 +604,60 @@ class Transactions(Key):
             print("请求失败")
 
 
+# 日志
+class Logs(Key):
+    # 初始化
+    def __init__(self, key_conf):
+        Key.__init__(self, key_conf)
+        super().__init__(key_conf)
+        # 重新赋值
+        self.api_key = key_conf.api_key
+
+    # Get Event Logs by Address
+    def get_event_logs_by_address(self, address, from_block, to_block, page, offset):
+        """
+        @开发人员: French \n
+        @创建时间: 2023-03-09 \n
+        @修改时间: 2023-03-09 \n
+        @功能描述: 根据ERC-20地址，获取区块时间日志 \n
+
+        Args:
+            address(str): ERC-20地址
+            from_block(int): 来自块
+            to_block(int): 到快
+            page(int): 页数
+            offset(int): 数量
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "logs",
+            "action": "getLogs",
+            "fromBlock": from_block,
+
+            "contractaddress": "",
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    pass
+
+
 # 代币
 class Tokens(Key):
     # 初始化
@@ -966,8 +1020,8 @@ class Tokens(Key):
             print("请求失败")
 
 
-# 日志
-class Logs(Key):
+# 气体追踪器
+class GasTracker(Key):
     # 初始化
     def __init__(self, key_conf):
         Key.__init__(self, key_conf)
@@ -975,31 +1029,25 @@ class Logs(Key):
         # 重新赋值
         self.api_key = key_conf.api_key
 
-    # Get Event Logs by Address
-    def get_event_logs_by_address(self, address, from_block, to_block, page, offset):
+    # 获取估计的确认时间
+    def get_estimation_of_confirmation_time(self, gas_price):
         """
-        @开发人员: French \n
-        @创建时间: 2023-03-09 \n
-        @修改时间: 2023-03-09 \n
-        @功能描述: 根据ERC-20地址，获取区块时间日志 \n
+        开发人员: French \n
+        @创建时间: 2023-03-15 \n
+        @修改时间: 2023-03-15 \n
+        @功能描述: 获取估计的确认时间\n
 
         Args:
-            address(str): ERC-20地址
-            from_block(int): 来自块
-            to_block(int): 到快
-            page(int): 页数
-            offset(int): 数量
+            gas_price(str): Gas价格
 
         Returns:
             dict
         """
         requests_url = self.api_url + "?"
         parameter = {
-            "module": "logs",
-            "action": "getLogs",
-            "fromBlock": from_block,
-
-            "contractaddress": "",
+            "module": "gastracker",
+            "action": "gasestimate",
+            "gasprice": gas_price,
             "apikey": self.api_key
         }
         requests_url += Tool.dict_to_url_parameter(parameter)
@@ -1017,4 +1065,154 @@ class Logs(Key):
         except requests.exceptions.ConnectionError:
             print("请求失败")
 
-    pass
+    # 获取Gas预估
+    def get_gas_oracle(self):
+        """
+        开发人员: French \n
+        @创建时间: 2023-03-15 \n
+        @修改时间: 2023-03-15 \n
+        @功能描述: 获取Gas预估\n
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "gastracker",
+            "action": "gasoracle",
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    # 获取每日平均 Gas 限制 -- PRO
+    def get_daily_average_gas_limit(self, start_date, end_date, sort="asc"):
+        """
+        开发人员: French \n
+        @创建时间: 2023-03-15 \n
+        @修改时间: 2023-03-15 \n
+        @功能描述: 获取估计的确认时间\n
+
+        Args:
+            start_date(str): Gas价格
+            end_date(str): Gas价格
+            sort(str): Gas价格
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "stats",
+            "action": "dailyavggaslimit",
+            "startdate": start_date,
+            "enddate": end_date,
+            "sort": sort,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    # 获取以太坊每日总 Gas 量 -- PRO
+    def get_ethereum_daily_total_gas_used(self, start_date, end_date, sort="asc"):
+        """
+        开发人员: French \n
+        @创建时间: 2023-03-15 \n
+        @修改时间: 2023-03-15 \n
+        @功能描述: 获取估计的确认时间\n
+
+        Args:
+            start_date(str): Gas价格
+            end_date(str): Gas价格
+            sort(str): Gas价格
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "stats",
+            "action": "dailygasused",
+            "startdate": start_date,
+            "enddate": end_date,
+            "sort": sort,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
+
+    # 获取每日平均 Gas 价格 -- PRO
+    def get_daily_average_gas_price(self, start_date, end_date, sort="asc"):
+        """
+        开发人员: French \n
+        @创建时间: 2023-03-15 \n
+        @修改时间: 2023-03-15 \n
+        @功能描述: 获取估计的确认时间\n
+
+        Args:
+            start_date(str): Gas价格
+            end_date(str): Gas价格
+            sort(str): Gas价格
+
+        Returns:
+            dict
+        """
+        requests_url = self.api_url + "?"
+        parameter = {
+            "module": "stats",
+            "action": "dailyavggasprice",
+            "startdate": start_date,
+            "enddate": end_date,
+            "sort": sort,
+            "apikey": self.api_key
+        }
+        requests_url += Tool.dict_to_url_parameter(parameter)
+        try:
+            # 发送请求
+            response = requests.get(requests_url)
+            response = json.loads(response.text)
+            # 判断是否发生了错误
+            if response["status"] == "1":
+                return response["result"]
+            else:
+                print("错误信息:")
+                print(response)
+                raise ValueError(response["result"])
+        except requests.exceptions.ConnectionError:
+            print("请求失败")
