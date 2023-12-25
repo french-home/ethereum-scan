@@ -614,7 +614,7 @@ class Logs(Key):
         self.api_key = key_conf.api_key
 
     # Get Event Logs by Address
-    def get_event_logs_by_address(self, address, from_block, to_block, page, offset):
+    def get_event_logs_by_address(self, address, from_block, to_block, page, offset=1000):
         """
         @开发人员: French \n
         @创建时间: 2023-03-09 \n
@@ -639,6 +639,7 @@ class Logs(Key):
             "fromBlock": from_block,
             "toBlock": to_block,
             "page": page,
+            "offset": offset,
             "apikey": self.api_key
         }
         requests_url += Tool.dict_to_url_parameter(parameter)
