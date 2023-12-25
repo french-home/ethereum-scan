@@ -618,7 +618,7 @@ class Logs(Key):
         """
         @开发人员: French \n
         @创建时间: 2023-03-09 \n
-        @修改时间: 2023-03-09 \n
+        @修改时间: 2023-12-25 \n
         @功能描述: 根据ERC-20地址，获取区块时间日志 \n
 
         Args:
@@ -635,9 +635,10 @@ class Logs(Key):
         parameter = {
             "module": "logs",
             "action": "getLogs",
+            "address": address,
             "fromBlock": from_block,
-
-            "contractaddress": "",
+            "toBlock": to_block,
+            "page": page,
             "apikey": self.api_key
         }
         requests_url += Tool.dict_to_url_parameter(parameter)
